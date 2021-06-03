@@ -1,0 +1,60 @@
+<!DOCTYPE  html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Emotion recognition</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'js/index.js' %}">
+</head>
+<body>
+ <div class="wrapper">
+    <header>
+        <h1>Emotion recognition of student</h1>
+    </header>
+    <div class="sections">
+        <section class="active">
+<!--            <form action="" method="POST" enctype="multipart/form-data">-->
+<!--                {% csrf_token %}-->
+<!--                <table>-->
+<!--                    {{ form.as_table }}-->
+<!--                </table>-->
+<!--                <input type="submit" value="Submit" id="submitForm"/>-->
+<!--            </form>-->
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <table>
+                    <tbody>
+                    <tr>
+                        <input type="text" name="fullname" maxlength="50" required="" id="id_fullname" placeholder="FullName"></td>
+                    </tr>
+                    <tr>
+                        <input type="text" name="classname" maxlength="50" required="" id="id_classname" placeholder="ClassName"></td>
+                    </tr>
+                    <tr>
+                        <input type="file" name="file" required="" id="id_file" accept="image/*" multiple></td>
+                    </tr>
+                </tbody>
+                </table>
+                <input type="submit" value="Submit" id="submitForm">
+            </form>
+        </section>
+    </div>
+    <footer>
+        <ul>
+            <li><span id="reset" onclick="resetFunction()">reset</span></li>
+            <li><input hidden type="reset" id="send"></li>
+        </ul>
+    </footer>
+</div>
+</form>
+<div class="notification"></div>
+
+<footer>
+   copyright © Pham Quang Huy - HNUE
+</footer>
+</body>
+</html>
