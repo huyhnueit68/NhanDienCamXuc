@@ -5,10 +5,6 @@ from .models import RequestClient
 from .models import RequestImages
 from datetime import datetime
 from django.core.files import File
-from django.core.files.temp import NamedTemporaryFile
-
-# Create your views here.
-from django.db import models
 
 
 def fileUploaderView(request):
@@ -17,9 +13,18 @@ def fileUploaderView(request):
         if form.is_valid():
             upload(request.FILES['file'])
             # save info to model
-            saveModelClient(request)
-            pathImg = '/media/' + request.FILES['file'].name
-            return HttpResponse("Good" + pathImg)
+            saveModel = saveModelClient(request)
+
+            # get all image with object result
+            query = RequestImages.objects.filter(request_image_id=saveModel)
+            pathReal = ""
+            for value in query:
+                imagePath = value.image_path
+                pathReal = "/media/" + str(imagePath)
+                # using model and processing image
+                print(pathReal)
+
+            return render(request, 'resultUpload.html', {'saveModel': pathReal})
         else:
             return HttpResponse("Bad" + request.FILES['file'].name)
 
@@ -42,16 +47,18 @@ def saveModelClient(request):
     # save model to request image
     saveModelImage(request, modelSave)
 
+    return modelSave;
+
 
 def saveModelImage(request, parentRequest):
     pathImg = 'media/' + request.FILES['file'].name
-    pk = parentRequest.pk
     status = 1
     result = -1
 
-    f = open(pathImg, 'r')
-    requestImage = RequestClient(image_path=File(f),
-                                 request_image_id=pk,
+    # self.photo is the ImageField
+    f = open(pathImg, 'rb')
+    requestImage = RequestImages(image_path=File(f),
+                                 request_image_id=parentRequest,
                                  status=status,
                                  result_image=result)
     requestImage.save()
