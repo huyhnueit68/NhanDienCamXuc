@@ -5,13 +5,16 @@ from .models import RequestClient
 from .models import RequestImages
 from datetime import datetime
 from django.core.files import File
+from .model.processImage import ProcessImage
 
 
 def fileUploaderView(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
+
         if form.is_valid():
             upload(request.FILES['file'])
+
             # save info to model
             saveModel = saveModelClient(request)
 
@@ -21,10 +24,13 @@ def fileUploaderView(request):
             for value in query:
                 imagePath = value.image_path
                 pathReal = "/media/" + str(imagePath)
-                # using model and processing image
-                print(pathReal)
 
-            return render(request, 'resultUpload.html', {'saveModel': pathReal})
+                # using model and processing image (redirect model processing)
+                processImage = ProcessImage(imagePath)
+                result=processImage.ActionProcess()
+
+            # return redirect(reverse('../model/processImage.py', kwargs={"pathReal": pathReal}))
+            return render(request, 'resultUpload.html', {'saveModel': result})
         else:
             return HttpResponse("Bad" + request.FILES['file'].name)
 
@@ -32,6 +38,7 @@ def fileUploaderView(request):
     return render(request, 'fileUploaderTemplate.html', {'form': form})
 
 
+# Function save info client
 def saveModelClient(request):
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
@@ -50,6 +57,7 @@ def saveModelClient(request):
     return modelSave;
 
 
+# Function save image for process
 def saveModelImage(request, parentRequest):
     pathImg = 'media/' + request.FILES['file'].name
     status = 1
@@ -64,6 +72,7 @@ def saveModelImage(request, parentRequest):
     requestImage.save()
 
 
+# Function upload image
 def upload(f):
     file = open('media/' + f.name, 'wb+')
     for chunk in f.chunks():
